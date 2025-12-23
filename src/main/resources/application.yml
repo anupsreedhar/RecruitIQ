@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: RecruitIQ
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recrutiq
+    username: your_db_username
+    password: your_db_password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  jpa:
+    hibernate:
+      ddl-auto: update # change to validate or none for production
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+
+---
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket:
+    resumes-original: resumes-original
+    resumes-redacted: resumes-redacted
+    jd-documents: documents-jd
+  region: us-east-1
+  secure: false # true if using HTTPS
+
+---
+
+security:
+  jwt:
+    secret: replace_with_secure_random_secret
+    expiration-ms: 3600000 # 1 hour
+
+---
+
+server:
+  port: 8080
