@@ -1,11 +1,12 @@
 package com.zelexon.recruitiq.dao;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import org.hibernate.annotations.Type;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -27,16 +28,15 @@ public class CandidatePositionMatch {
 
     private Integer alignmentScore;
 
-    @Type(type = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> strengths;
 
-    @Type(type = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> gaps;
 
-    @Type(type = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> interviewFocus;
 
     private String internalNotes;
     private LocalDateTime createdAt;
 }
-

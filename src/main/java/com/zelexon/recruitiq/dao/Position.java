@@ -1,9 +1,16 @@
 package com.zelexon.recruitiq.dao;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.UUID;
 
 @Entity
 @Table(name = "positions")
@@ -18,10 +25,9 @@ public class Position {
     private String title;
     private String jdText;
 
-    @Type(type = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> jdStructured;
 
     private String status;
     private LocalDateTime createdAt;
 }
-
