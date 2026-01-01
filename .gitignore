@@ -1,8 +1,4 @@
-/build/
-/.gradle/
-/out/
-/*.iml
-/.idea/
-/*.log
-/.DS_Store
-/.vscode/
+# Ignore secrets file
+/db-secrets.properties
+DB_PASSWORD=r@(ru!t123
+
