@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "candidates")
 public class Candidate {
