@@ -3,6 +3,7 @@ package com.zelexon.recruitiq.controller;
 import com.zelexon.recruitiq.dto.ApiErrorResponse;
 import com.zelexon.recruitiq.dto.ApiResponseWrapper;
 import com.zelexon.recruitiq.dto.CandidateDTO;
+import com.zelexon.recruitiq.service.CandidateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -10,9 +11,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +25,9 @@ import java.util.UUID;
 @RequestMapping("/api/v1/candidates")
 @Tag(name = "Candidates", description = "Candidate APIs (PII-safe)")
 public class CandidateController {
+
+    @Autowired
+    private CandidateService candidateService;
 
     @GetMapping
     @Operation(
@@ -68,8 +74,8 @@ public class CandidateController {
             )
     })
     public ResponseEntity<ApiResponseWrapper<List<CandidateDTO>>> listCandidates() {
-        // TODO wire CandidateService; stubbed for contract generation.
-        return ResponseEntity.ok(ApiResponseWrapper.ok(List.of(), "OK"));
+        List<CandidateDTO> candidates = candidateService.listCandidates();
+        return ResponseEntity.ok(ApiResponseWrapper.ok(candidates, "OK"));
     }
 
     @GetMapping("/{candidateId}")
@@ -119,8 +125,7 @@ public class CandidateController {
     public ResponseEntity<ApiResponseWrapper<CandidateDTO>> getCandidateById(
             @PathVariable UUID candidateId
     ) {
-        // TODO wire CandidateService; stubbed for contract generation.
-        CandidateDTO dto = new CandidateDTO();
+        CandidateDTO dto = candidateService.getCandidateById(candidateId);
         return ResponseEntity.ok(ApiResponseWrapper.ok(dto, "OK"));
     }
 
@@ -300,5 +305,27 @@ public class CandidateController {
     ) {
         CandidateDTO dto = new CandidateDTO();
         return ResponseEntity.ok(ApiResponseWrapper.ok(dto, "Skills updated"));
+    }
+
+    @Autowired
+    private CandidateService candidateService;
+
+    @PostMapping(path = "/{candidateId}/uploadResume", consumes = "multipart/form-data")
+    @Operation(
+            summary = "Upload candidate resume",
+            description = "Uploads a resume file for the specified candidate."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Resume uploaded successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Candidate not found")
+    })
+    public ResponseEntity<ApiResponseWrapper<String>> uploadResume(
+            @PathVariable UUID candidateId,
+            @RequestPart("resume") MultipartFile resumeFile
+    ) {
+        // Call service to handle upload (implement logic in CandidateService)
+        candidateService.uploadResume(candidateId, resumeFile);
+        return ResponseEntity.ok(ApiResponseWrapper.ok(null, "Resume uploaded successfully"));
     }
 }
