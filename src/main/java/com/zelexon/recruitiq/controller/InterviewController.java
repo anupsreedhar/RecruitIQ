@@ -3,6 +3,7 @@ package com.zelexon.recruitiq.controller;
 import com.zelexon.recruitiq.dto.ApiErrorResponse;
 import com.zelexon.recruitiq.dto.ApiResponseWrapper;
 import com.zelexon.recruitiq.dto.InterviewRequestDTO;
+import com.zelexon.recruitiq.service.InterviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,9 @@ import java.util.UUID;
 @RequestMapping("/api/v1/interviews")
 @Tag(name = "Interviews", description = "Interview request APIs")
 public class InterviewController {
+
+    @Autowired
+    private InterviewService interviewService;
 
     @GetMapping
     @Operation(summary = "List interview requests", description = "Lists interview requests. Optionally filter by vendorId or status.")
@@ -47,7 +52,8 @@ public class InterviewController {
             @RequestParam(required = false) UUID vendorId,
             @RequestParam(required = false) String status
     ) {
-        return ResponseEntity.ok(ApiResponseWrapper.ok(List.of(), "OK"));
+        List<InterviewRequestDTO> result = interviewService.listInterviewRequests(vendorId, status);
+        return ResponseEntity.ok(ApiResponseWrapper.ok(result, "OK"));
     }
 
     @PostMapping
@@ -86,7 +92,8 @@ public class InterviewController {
             )
             @RequestBody InterviewRequestDTO request
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseWrapper.ok(request, "Interview requested"));
+        InterviewRequestDTO result = interviewService.createInterviewRequest(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseWrapper.ok(result, "Interview requested"));
     }
 
     @PatchMapping("/{requestId}/status")
@@ -115,6 +122,7 @@ public class InterviewController {
             )
             @RequestBody java.util.Map<String, String> body
     ) {
-        return ResponseEntity.ok(ApiResponseWrapper.ok(new InterviewRequestDTO(), "Status updated"));
+        InterviewRequestDTO result = interviewService.updateInterviewStatus(requestId, body);
+        return ResponseEntity.ok(ApiResponseWrapper.ok(result, "Status updated"));
     }
 }

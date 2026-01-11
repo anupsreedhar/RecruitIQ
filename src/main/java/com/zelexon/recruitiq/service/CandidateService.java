@@ -4,8 +4,8 @@ import com.zelexon.recruitiq.dao.Candidate;
 import com.zelexon.recruitiq.dto.CandidateDTO;
 import com.zelexon.recruitiq.repository.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -17,10 +17,6 @@ import java.util.stream.Collectors;
 public class CandidateService {
     @Autowired
     private CandidateRepository candidateRepository;
-
-    public void uploadResume(UUID candidateId, MultipartFile resumeFile) {
-        // TODO: Implement resume upload logic
-    }
 
     public List<CandidateDTO> listCandidates() {
         return candidateRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());

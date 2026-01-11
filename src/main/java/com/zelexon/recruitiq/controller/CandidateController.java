@@ -174,22 +174,10 @@ public class CandidateController {
             )
     })
     public ResponseEntity<ApiResponseWrapper<CandidateDTO>> createCandidate(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "Candidate payload (PII-safe)",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = CandidateDTO.class),
-                            examples = @ExampleObject(
-                                    name = "CreateCandidateRequest",
-                                    value = "{\"candidateCode\":\"CAND-000124\",\"totalExperienceYears\":5,\"primarySkills\":{\"java\":\"intermediate\"},\"location\":\"Hyderabad\"}"
-                            )
-                    )
-            )
             @RequestBody CandidateDTO request
     ) {
-        // TODO wire CandidateService; stubbed for contract generation.
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseWrapper.ok(request, "Candidate created"));
+        CandidateDTO dto = candidateService.createCandidate(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseWrapper.ok(dto, "Candidate created"));
     }
 
     @GetMapping("/by-code/{candidateCode}")
@@ -239,7 +227,7 @@ public class CandidateController {
     public ResponseEntity<ApiResponseWrapper<CandidateDTO>> getCandidateByCode(
             @PathVariable String candidateCode
     ) {
-        CandidateDTO dto = new CandidateDTO();
+        CandidateDTO dto = candidateService.getCandidateByCode(candidateCode);
         return ResponseEntity.ok(ApiResponseWrapper.ok(dto, "OK"));
     }
 
@@ -289,43 +277,9 @@ public class CandidateController {
     })
     public ResponseEntity<ApiResponseWrapper<CandidateDTO>> updateCandidateSkills(
             @PathVariable UUID candidateId,
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    description = "JSON object representing primary skills",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = Map.class),
-                            examples = @ExampleObject(
-                                    name = "UpdateSkillsRequest",
-                                    value = "{\"java\":\"advanced\",\"spring\":\"advanced\"}"
-                            )
-                    )
-            )
             @RequestBody Map<String, Object> primarySkills
     ) {
-        CandidateDTO dto = new CandidateDTO();
-        return ResponseEntity.ok(ApiResponseWrapper.ok(dto, "Skills updated"));
-    }
-
-    @Autowired
-    private CandidateService candidateService;
-
-    @PostMapping(path = "/{candidateId}/uploadResume", consumes = "multipart/form-data")
-    @Operation(
-            summary = "Upload candidate resume",
-            description = "Uploads a resume file for the specified candidate."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Resume uploaded successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "404", description = "Candidate not found")
-    })
-    public ResponseEntity<ApiResponseWrapper<String>> uploadResume(
-            @PathVariable UUID candidateId,
-            @RequestPart("resume") MultipartFile resumeFile
-    ) {
-        // Call service to handle upload (implement logic in CandidateService)
-        candidateService.uploadResume(candidateId, resumeFile);
-        return ResponseEntity.ok(ApiResponseWrapper.ok(null, "Resume uploaded successfully"));
+        CandidateDTO dto = candidateService.updateCandidateSkills(candidateId, primarySkills);
+       return ResponseEntity.ok(ApiResponseWrapper.ok(dto, "Skills updated"));
     }
 }
