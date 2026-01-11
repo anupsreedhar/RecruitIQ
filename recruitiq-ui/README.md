@@ -1,64 +1,118 @@
-## Project Detail
-This project tries to cover all the Scenerios for the JSONB implementaion which developers will be facing in day to day life when using spring data JPA.
+recruitiq-ui
+RecruitIQ UI
 
-## What is JSONB 
-The data types json and jsonb, as defined by the PostgreSQL documentation,are almost identical; the key difference is that json data is stored as an exact copy of the JSON input text, whereas jsonb stores data in a decomposed binary form; that is, not as an ASCII/UTF-8 string, but as binary code.
+RecruitIQ UI is the frontend application for the RecruitIQ platform. It provides an intuitive user interface for recruiters, hiring managers, and candidates to interact with the system.
 
-## What are the benifits of JSONB 
-- More efficiency,
-- Significantly faster to process,
-- Supports indexing (which can be a significant advantage, as we'll see later),
-- Simpler schema designs (replacing entity-attribute-value (EAV) tables with jsonb columns, which can be queried,  indexed and joined, allowing for performance improvements up until 1000X!)
+🧩 Technology Stack
 
-## What are the drawbacks of JSONB 
-- Slightly slower input (due to added conversion overhead),
-- It may take more disk space than plain json due to a larger table footprint, though not always,
-- Certain queries (especially aggregate ones) may be slower due to the lack of statistics.
+Framework: React / Angular (choose applicable)
 
-## Scenerios
-- Working on simple json document using jsonb 
-- Working on complex json document using jsonb 
+Language: TypeScript / JavaScript
 
-Please see `StudentController.java` as a starting for that.
+Styling: CSS / SCSS / Tailwind / Material UI
 
-We have used dependency from `https://github.com/vladmihalcea/hibernate-types` for modeling our pojo's.
+State Management: Redux / Context API (if applicable)
 
-````xml
-<dependency>
-    <groupId>com.vladmihalcea</groupId>
-    <artifactId>hibernate-types-52</artifactId>
-    <version>2.10.4</version>
-</dependency>
-````
+Build Tool: Vite / Webpack / Angular CLI
 
-For jsonb type we have to define the columns type as jsonb as follows:
+📂 Project Structure
+recruitiq-ui/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── hooks/
+│   ├── styles/
+│   └── utils/
+├── public/
+├── package.json
+├── tsconfig.json
+└── README.md
+🚀 Getting Started
+Prerequisites
 
-````java
-@Type(type = "jsonb")
-````
+Node.js 18+
 
-## Project Setup:
-- clone this repo.
-- Update the database configutaions.
-- Create student table using below query:
-````sql
-CREATE TABLE student (
-	id varchar(255) NOT NULL,
-	age varchar(255) NULL,
-	"name" varchar(255) NULL,
-	bio jsonb NULL,
-	CONSTRAINT student_pkey PRIMARY KEY (id)
-);
-````
+npm / yarn / pnpm
 
-- Insert scripts used:
+Install & Run
+cd recruitiq-ui
+npm install
+npm start
 
-````sql
-INSERT INTO public.student
-(id, age, "name", bio)
-VALUES('1', '26', 'hakuna_matata', '{"professional": {"xyz": true}, "personal": {"xyx": "test"}}');
+or
 
-````
-- Run the project in console using `mvn spring-boot:run`
+npm run dev
 
+Application runs at:
 
+http://localhost:3000
+🔗 Backend Integration
+
+The UI communicates with RecruitIQ Backend APIs:
+
+Base URL: http://localhost:8080/api
+
+Configuration is managed via environment files:
+
+.env
+.env.development
+.env.production
+🧪 Testing
+npm test
+📦 Build for Production
+npm run build
+
+Output:
+
+dist/ or build/
+🔐 Security Considerations
+
+JWT stored securely (HttpOnly cookies recommended)
+
+Role-based UI rendering
+
+API error handling & validation
+
+👨‍💻 Maintainer
+
+Anup Sreedharan
+RecruitIQ Platform
+
+📌 Notes
+
+This repository follows a monorepo structure:
+
+RecruitIQ/
+├── recruitiq-backend
+└── recruitiq-ui
+
+Each module can be built and deployed independently.
+
+I’ve created proper, production-ready README templates for both modules in the canvas.
+
+What to do next (important)
+
+Copy the first section into
+recruitiq-backend/README.md
+
+Copy the second section into
+recruitiq-ui/README.md
+
+This keeps your monorepo clean and professional.
+
+Why this README structure is good
+
+✅ Clear module ownership (Backend vs UI)
+
+✅ Architect-level details (stack, security, deployment)
+
+✅ Easy onboarding for new developers
+
+✅ Ready for enterprise reviews & audits
+
+Optional improvements (I can do next)
+
+Add API examples per controller
+
+Add architecture diagram section
