@@ -2,9 +2,11 @@ package com.zelexon.recruitiq.dto;
 
 import com.zelexon.recruitiq.dao.FileType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.util.UUID;
 
+@Data
 @Schema(name = "ResumeFileDTO", description = "Resume file metadata")
 public class ResumeFileDTO {
 

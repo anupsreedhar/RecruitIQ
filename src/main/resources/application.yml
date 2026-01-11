@@ -3,9 +3,9 @@ spring:
     name: RecruitIQ
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/recrutiq
+    url: jdbc:postgresql://localhost:5433/recruitiq?currentSchema=public
     username: recruitiq_user
-    password: ${DB_PASSWORD}
+    password: recruitiq
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10

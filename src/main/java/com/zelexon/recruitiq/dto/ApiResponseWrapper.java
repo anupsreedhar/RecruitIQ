@@ -33,6 +33,10 @@ public class ApiResponseWrapper<T> {
         return new ApiResponseWrapper<>(true, data, message, Instant.now());
     }
 
+    public static <T> ApiResponseWrapper<T> error(String message) {
+        return new ApiResponseWrapper<>(false, null, message, Instant.now());
+    }
+
     public boolean isSuccess() {
         return success;
     }
@@ -65,4 +69,3 @@ public class ApiResponseWrapper<T> {
         this.timestamp = timestamp;
     }
 }
-

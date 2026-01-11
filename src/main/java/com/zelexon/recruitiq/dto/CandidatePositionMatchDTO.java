@@ -1,10 +1,12 @@
 package com.zelexon.recruitiq.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.util.Map;
 import java.util.UUID;
 
+@Data
 @Schema(name = "CandidatePositionMatchDTO", description = "Candidate-to-position evaluation/match result (PII-safe)")
 public class CandidatePositionMatchDTO {
 

@@ -5,6 +5,11 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+// Use the shared top-level Role enum to avoid duplicate types (and mismatches)
+import com.zelexon.recruitiq.dao.Role;
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "users")
 public class User {
@@ -55,12 +60,4 @@ public class User {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    // Role Enum
-    public enum Role {
-        AGENCY_ADMIN,
-        RECRUITER,
-        VENDOR_USER
-    }
 }
-

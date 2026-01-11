@@ -3,6 +3,7 @@ package com.zelexon.recruitiq.controller;
 import com.zelexon.recruitiq.dto.ApiErrorResponse;
 import com.zelexon.recruitiq.dto.ApiResponseWrapper;
 import com.zelexon.recruitiq.dto.UserDTO;
+import com.zelexon.recruitiq.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -10,8 +11,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +25,11 @@ import java.util.UUID;
 @RequestMapping("/api/v1/users")
 @Tag(name = "Users", description = "User management APIs (internal/admin)")
 public class UserController {
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     @Operation(summary = "List users", description = "Lists users (admin/internal). Contains email (PII) and must not be exposed to vendors.")
@@ -73,15 +81,44 @@ public class UserController {
     public ResponseEntity<ApiResponseWrapper<UserDTO>> createUser(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
-                    description = "User payload",
+                    description = "User payload (include password)",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO.class), examples = @ExampleObject(
                             name = "CreateUserRequest",
-                            value = "{\"email\":\"recruiter@recrutiq.com\",\"role\":\"RECRUITER\",\"status\":\"ACTIVE\"}"
+                            value = "{\"email\":\"recruiter@recrutiq.com\",\"role\":\"RECRUITER\",\"status\":\"ACTIVE\",\"password\":\"Secret123!\"}"
                     ))
             )
-            @RequestBody UserDTO request
+            @RequestBody Map<String, String> request
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseWrapper.ok(request, "User created"));
+        // Validate required fields
+        String email = request.get("email");
+        String roleStr = request.get("role");
+        String status = request.getOrDefault("status", "ACTIVE");
+        String password = request.get("password");
+        if (email == null || roleStr == null || password == null) {
+            return ResponseEntity.badRequest().body(ApiResponseWrapper.error("Missing required fields: email, role, password"));
+        }
+
+        // Check if user already exists
+        if (userRepository.findByEmail(email).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(ApiResponseWrapper.error("User already exists"));
+        }
+
+        // Create and save user
+        com.zelexon.recruitiq.dao.User user = new com.zelexon.recruitiq.dao.User();
+        user.setEmail(email);
+        user.setPasswordHash(passwordEncoder.encode(password));
+        final com.zelexon.recruitiq.dao.Role role;
+        try {
+            role = com.zelexon.recruitiq.dao.Role.valueOf(roleStr);
+            user.setRole(role);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponseWrapper.error("Invalid role"));
+        }
+        user.setStatus(status);
+        userRepository.save(user);
+
+        UserDTO dto = new UserDTO(user.getId(), user.getEmail(), role, user.getStatus());
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponseWrapper.ok(dto, "User created"));
     }
 
     @PatchMapping("/{userId}/status")

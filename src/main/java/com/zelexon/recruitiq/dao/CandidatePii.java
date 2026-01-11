@@ -5,8 +5,11 @@ import jakarta.persistence.Table;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import lombok.Data;
+
 import java.util.UUID;
 
+@Data
 @Entity
 @Table(name = "candidate_pii")
 public class CandidatePii {

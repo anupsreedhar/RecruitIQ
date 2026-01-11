@@ -1,9 +1,11 @@
 package com.zelexon.recruitiq.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.util.UUID;
 
+@Data
 @Schema(name = "VendorDTO", description = "Vendor summary")
 public class VendorDTO {
 

@@ -2,9 +2,11 @@ package com.zelexon.recruitiq.dto;
 
 import com.zelexon.recruitiq.dao.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
 import java.util.UUID;
 
+@Data
 @Schema(name = "UserDTO", description = "User representation (contains PII: email). Use only for internal/admin APIs")
 public class UserDTO {
 

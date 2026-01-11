@@ -32,7 +32,8 @@ dependencies {
     implementation 'com.vladmihalcea:hibernate-types-60:2.21.1'
 
     // AWS S3 / MinIO SDK
-    implementation 'software.amazon.awssdk:s3:2.21.0'
+    //implementation 'software.amazon.awssdk:s3:2.21.0'
+    implementation 'io.minio:minio:8.5.7'
 
     // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -43,6 +44,9 @@ dependencies {
 
     // DevTools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Flyway migrations
+    implementation 'org.flywaydb:flyway-core'
 
     // Testing
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
